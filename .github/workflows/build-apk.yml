@@ -1,0 +1,39 @@
+name: Build AAYUSH SALES MASTER APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle 8.10
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10'
+
+      - name: Extract Project
+        run: |
+          unzip -o AAYUSH-SALES-MASTER-V2.zip
+          find AAYUSH-SALES-MASTER-V2 -maxdepth 3 -type f
+
+      - name: Build Debug APK
+        working-directory: AAYUSH-SALES-MASTER-V2/AAYUSH-SALES-MASTER
+        run: |
+          gradle :app:assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AAYUSH-SALES-MASTER-APK
+          path: AAYUSH-SALES-MASTER-V2/AAYUSH-SALES-MASTER/app/build/outputs/apk/debug/app-debug.apk
